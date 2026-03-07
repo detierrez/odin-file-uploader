@@ -1,0 +1,16 @@
+<% 
+const { user } = locals;
+const username = user ? user.username : 'stranger';
+%>
+
+<nav>
+  <a href="/">Home</a>
+  <% if (user) { %>
+  <a href="/logout">Logout</a>
+  <% } else { %>
+  <a href="/login">Login</a>
+  <a href="/signup">Signup</a>
+  <% } %>
+</nav>
+
+<h1>Hello, <%= username %>!</h1>
