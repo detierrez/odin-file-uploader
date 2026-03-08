@@ -35,7 +35,7 @@ const { parentFolderId, subFolders, files } = folder
 
   <% }) %>
   <% files.forEach(file => { %>
-  <li><%= file.name %></li>
+  <li><a href="/files/<%= file.id %>"><%= file.name %></a></li>
   <% }) %>
 </ul>
 

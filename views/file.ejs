@@ -1,0 +1,11 @@
+<% 
+const { id, name, size, uploadedAt } = file
+%>
+
+<h1>File details: </h1>
+<ul>
+  <li>Filename: <%= name %></li>
+  <li>Upload at: <%= uploadedAt %></li>
+  <li>Size: <%= size / 1000 %> kB</li>
+  <a href="/files/<%= id %>/download">Download</a>
+</ul>

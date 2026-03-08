@@ -8,9 +8,10 @@ const bcrypt = require("bcryptjs");
 const methodOverride = require("method-override");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const prisma = require("./lib/prisma.js");
-const indexRouter = require("./routes/index.js");
-const authRouter = require("./routes/auth.js");
-const foldersRouter = require("./routes/folders.js");
+const indexRouter = require("./routes/index");
+const authRouter = require("./routes/auth");
+const foldersRouter = require("./routes/folders");
+const filesRouter = require("./routes/files");
 
 const { PORT, SESSION_SECRET } = process.env;
 
@@ -92,5 +93,6 @@ app.use("/", (req, res, next) => {
 app.use("/", authRouter);
 app.use("/", indexRouter);
 app.use("/folders", foldersRouter);
+app.use("/files", filesRouter);
 
 app.listen(PORT, () => console.log(`Check http://localhost:${PORT}`));

@@ -33,12 +33,13 @@ model Folder {
 }
 
 model File {
-  id       Int    @id @default(autoincrement())
-  folderId Int
-  folder   Folder @relation(fields: [folderId], references: [id])
-  name     String
-  path     String
-  size     Int
+  id         Int      @id @default(autoincrement())
+  folderId   Int
+  folder     Folder   @relation(fields: [folderId], references: [id])
+  name       String
+  path       String
+  size       Int
+  uploadedAt DateTime @default(now())
 }
 
 model Session {
