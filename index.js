@@ -7,8 +7,9 @@ const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcryptjs");
 const methodOverride = require("method-override");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
-const authRouter = require("./routes/auth.js");
 const prisma = require("./lib/prisma.js");
+const indexRouter = require("./routes/index.js");
+const authRouter = require("./routes/auth.js");
 
 const { PORT, SESSION_SECRET } = process.env;
 
@@ -85,6 +86,6 @@ app.use("/", (req, res, next) => {
   next();
 });
 app.use("/", authRouter);
-app.get("/", (req, res) => res.render("index"));
+app.use("/", indexRouter);
 
 app.listen(PORT, () => console.log(`Check http://localhost:${PORT}`));

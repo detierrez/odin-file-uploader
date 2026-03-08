@@ -14,3 +14,10 @@ const username = user ? user.username : 'stranger';
 </nav>
 
 <h1>Hello, <%= username %>!</h1>
+
+<form action="" method="POST" enctype="multipart/form-data">
+  <label for="avatar">Avatar: </label>
+  <input type="file" name="avatar" id="avatar" />
+  <br />
+  <button type="submit">Upload</button>
+</form>
