@@ -10,6 +10,7 @@ const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const prisma = require("./lib/prisma.js");
 const indexRouter = require("./routes/index.js");
 const authRouter = require("./routes/auth.js");
+const foldersRouter = require("./routes/folders.js");
 
 const { PORT, SESSION_SECRET } = process.env;
 
@@ -37,7 +38,10 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = await prisma.user.findUnique({ where: { id } });
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: { rootFolder: true },
+    });
     return done(null, user);
   } catch (error) {
     return done(error);
@@ -87,5 +91,6 @@ app.use("/", (req, res, next) => {
 });
 app.use("/", authRouter);
 app.use("/", indexRouter);
+app.use("/folders", foldersRouter);
 
 app.listen(PORT, () => console.log(`Check http://localhost:${PORT}`));

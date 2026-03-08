@@ -1,23 +1,6 @@
-<% 
-const { user } = locals;
-const username = user ? user.username : 'stranger';
-%>
+<h1>Welcome to Odinbox :]</h1>
+<h2>Upload your files, backup your folders, drop your stuff</h2>
 
 <nav>
-  <a href="/">Home</a>
-  <% if (user) { %>
-  <a href="/logout">Logout</a>
-  <% } else { %>
-  <a href="/login">Login</a>
-  <a href="/signup">Signup</a>
-  <% } %>
+  <a href="/login">Login</a> or <a href="/signup">Signup</a>
 </nav>
-
-<h1>Hello, <%= username %>!</h1>
-
-<form action="" method="POST" enctype="multipart/form-data">
-  <label for="avatar">Avatar: </label>
-  <input type="file" name="avatar" id="avatar" />
-  <br />
-  <button type="submit">Upload</button>
-</form>

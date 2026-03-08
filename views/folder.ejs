@@ -1,0 +1,36 @@
+<% 
+const { parentFolderId, subFolders, files } = folder
+%>
+<nav>
+  <a href="/">Home</a>
+  <a href="/logout">Logout</a>
+</nav>
+
+<h1>Hello, <%= user.username %>!</h1>
+
+<h1><%= folder.name %></h1>
+
+<form action="/folders/<%= folder.id %>/folder" method="POST">
+  <input type="hidden" name="parentFolderId" id="parentFolderId" value="<%= folder.id %>" />
+  <input type="text" name="name" id="name" />
+  <button type="submit">+ Folder</button>
+</form>
+
+<ul>
+  <% if (parentFolderId) { %>
+  <li><a href="/folders/<%= parentFolderId %>">../</a></li>
+  <% } %>
+  <% subFolders.forEach(subfolder => { %>
+  <li><a href="/folders/<%= subfolder.id %>"><%= subfolder.name %></a></li>
+  <% }) %>
+  <% files.forEach(file => { %>
+  <li><%= file.name %></li>
+  <% }) %>
+</ul>
+
+<form action="/folders/<%= folder.id %>/file" method="POST" enctype="multipart/form-data">
+  <label for="file">Upload a file: </label>
+  <input type="file" name="file" id="file" />
+  <br />
+  <button type="submit">Upload</button>
+</form>
