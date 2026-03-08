@@ -5,6 +5,7 @@ const router = Router();
 router.get("/", controller.getRootFolder);
 router.get("/:id", controller.getFolder);
 router.patch("/:id", controller.patchFolder);
+router.delete("/:id", controller.deleteFolder);
 router.post("/:id/folder", controller.postFolder);
 router.post("/:id/file", controller.postFile);
 

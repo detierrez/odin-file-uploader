@@ -26,6 +26,14 @@ module.exports.patchFolder = async (req, res, next) => {
   res.redirect(`/folders/${folder.parentFolderId}`);
 };
 
+module.exports.deleteFolder = async (req, res, next) => {
+  const { id } = req.params;
+  const folder = await prisma.folder.delete({
+    where: { id: Number(id) },
+  });
+  res.redirect(`/folders/${folder.parentFolderId}`);
+};
+
 module.exports.postFolder = async (req, res, next) => {
   const { id } = req.params;
   const { name } = req.body;

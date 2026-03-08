@@ -25,7 +25,11 @@ const { parentFolderId, subFolders, files } = folder
     <form method="POST" action="/folders/<%= subfolder.id %>" enctype="application/x-www-form-urlencoded" style="display: inline;">
       <input type="hidden" name="_method" value='PATCH'>
       <input type="text" name="name">
-      <button>Rename</button>
+      <button type="submit">Rename</button>
+    </form>
+    <form method="POST" action="/folders/<%= subfolder.id %>" enctype="application/x-www-form-urlencoded" style="display: inline;">
+      <input type="hidden" name="_method" value='DELETE'>
+      <button type="submit">×</button>
     </form>
   </li>
 
