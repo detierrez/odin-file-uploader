@@ -8,6 +8,8 @@ const { parentFolderId, subFolders, files } = folder
 
 <h1>Hello, <%= user.username %>!</h1>
 
+<%- include('./partials/folderPath') %>
+
 <h1><%= folder.name %></h1>
 
 <form action="/folders/<%= folder.id %>/folder" method="POST">

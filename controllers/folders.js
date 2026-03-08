@@ -13,7 +13,26 @@ module.exports.getFolder = async (req, res, next) => {
     where: { id: Number(id) },
     include: { subFolders: true, files: true },
   });
-  res.render("html", { view: "folder", folder });
+  const superFolders = await prisma.$queryRaw`
+    WITH RECURSIVE folder_tree AS (
+      SELECT 
+          id, 
+          name, 
+          "parentFolderId"
+      FROM "Folder"
+      WHERE id = ${folder.parentFolderId}
+      UNION ALL
+      SELECT 
+          f.id, 
+          f.name, 
+          f."parentFolderId"
+      FROM "Folder" f
+      INNER JOIN folder_tree ft ON f.id = ft."parentFolderId"
+    )
+    SELECT * FROM folder_tree;
+    `;
+  superFolders.reverse();
+  res.render("html", { view: "folder", folder, superFolders });
 };
 
 module.exports.patchFolder = async (req, res, next) => {
