@@ -2,8 +2,8 @@ const path = require("node:path");
 const prisma = require("../lib/prisma");
 
 module.exports.getFile = async (req, res, next) => {
-  const { id } = req.params;
-  const file = await prisma.file.findUnique({ where: { id: Number(id) } });
+  const id = Number(req.params.id);
+  const file = await prisma.file.findUnique({ where: { id } });
   const superFolders = await prisma.$queryRaw`
     WITH RECURSIVE folder_tree AS (
       SELECT 
@@ -27,7 +27,15 @@ module.exports.getFile = async (req, res, next) => {
 };
 
 module.exports.downloadFile = async (req, res, next) => {
-  const { id } = req.params;
-  const file = await prisma.file.findUnique({ where: { id: Number(id) } });
+  const id = Number(req.params.id);
+  const file = await prisma.file.findUnique({ where: { id } });
   res.download(path.join(__dirname, `..`, file.path), file.name);
+};
+
+module.exports.hasAccess = (req, res, next) => {
+  const id = Number(req.params.id);
+  const hasAccess = req.user.files.some((file) => file.id === id);
+  if (hasAccess) return next();
+
+  next("Error: Not access");
 };

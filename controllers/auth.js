@@ -9,12 +9,16 @@ module.exports.getSignup = (req, res, next) => {
 module.exports.postSignup = async (req, res, next) => {
   const { username, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
-  await prisma.user.create({
+
+  const rootFolder = await prisma.folder.create({
     data: {
-      username,
-      password: hashedPassword,
-      rootFolder: { create: { name: "root" } },
+      name: "root",
+      owner: { create: { username, password: hashedPassword } },
     },
+  });
+  await prisma.user.update({
+    data: { rootFolderId: rootFolder.id },
+    where: { id: rootFolder.ownerId },
   });
   res.redirect("/login");
 };

@@ -41,7 +41,7 @@ passport.deserializeUser(async (id, done) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id },
-      include: { rootFolder: true },
+      include: { rootFolder: true, folders: true, files: true },
     });
     return done(null, user);
   } catch (error) {
@@ -94,5 +94,7 @@ app.use("/", authRouter);
 app.use("/", indexRouter);
 app.use("/folders", foldersRouter);
 app.use("/files", filesRouter);
+// app.use("/", (req, res, next) => next("Error"));
+// app.use("/", (err, req, res, next) => res.render("html", { view: "404" }));
 
 app.listen(PORT, () => console.log(`Check http://localhost:${PORT}`));

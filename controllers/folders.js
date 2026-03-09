@@ -7,13 +7,14 @@ module.exports.getRootFolder = async (req, res, next) => {
   res.redirect(`/folders/${rootFolderId}`);
 };
 
-module.exports.getFolder = async (req, res, next) => {
-  const { id } = req.params;
-  const folder = await prisma.folder.findUnique({
-    where: { id: Number(id) },
-    include: { subFolders: true, files: true },
-  });
-  const superFolders = await prisma.$queryRaw`
+module.exports.getFolder = [
+  async (req, res, next) => {
+    const id = Number(req.params.id);
+    const folder = await prisma.folder.findUnique({
+      where: { id },
+      include: { subFolders: true, files: true },
+    });
+    const superFolders = await prisma.$queryRaw`
     WITH RECURSIVE folder_tree AS (
       SELECT 
           id, 
@@ -31,33 +32,34 @@ module.exports.getFolder = async (req, res, next) => {
     )
     SELECT * FROM folder_tree;
     `;
-  superFolders.reverse();
-  res.render("html", { view: "folder", folder, superFolders });
-};
+    superFolders.reverse();
+    res.render("html", { view: "folder", folder, superFolders });
+  },
+];
 
 module.exports.patchFolder = async (req, res, next) => {
-  const { id } = req.params;
+  const id = Number(req.params.id);
   const { name } = req.body;
   const folder = await prisma.folder.update({
     data: { name },
-    where: { id: Number(id) },
+    where: { id },
   });
   res.redirect(`/folders/${folder.parentFolderId}`);
 };
 
 module.exports.deleteFolder = async (req, res, next) => {
-  const { id } = req.params;
+  const id = Number(req.params.id);
   const folder = await prisma.folder.delete({
-    where: { id: Number(id) },
+    where: { id },
   });
   res.redirect(`/folders/${folder.parentFolderId}`);
 };
 
 module.exports.postFolder = async (req, res, next) => {
-  const { id } = req.params;
+  const id = Number(req.params.id);
   const { name } = req.body;
   await prisma.folder.create({
-    data: { name, parentFolderId: Number(id) },
+    data: { ownerId: req.user.id, name, parentFolderId: id },
   });
   res.redirect(`/folders/${id}`);
 };
@@ -65,12 +67,26 @@ module.exports.postFolder = async (req, res, next) => {
 module.exports.postFile = [
   upload.single("file"),
   async (req, res, next) => {
-    const { id } = req.params;
+    const id = Number(req.params.id);
     const { originalname, path, size } = req.file;
 
     await prisma.file.create({
-      data: { folderId: Number(id), name: originalname, path, size },
+      data: {
+        ownerId: req.user.id,
+        folderId: id,
+        name: originalname,
+        path,
+        size,
+      },
     });
     res.redirect(`/folders/${id}`);
   },
 ];
+
+module.exports.hasAccess = (req, res, next) => {
+  const id = Number(req.params.id);
+  const hasAccess = req.user.folders.some((folder) => folder.id === id);
+  if (hasAccess) return next();
+
+  next("Error: Not access");
+};

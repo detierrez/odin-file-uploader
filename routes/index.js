@@ -1,8 +1,7 @@
 const { Router } = require("express");
-const controller = require("../controllers/index");
+const { loggedOut } = require("../controllers/common");
 const router = Router();
 
-router.get("/", controller.getIndex);
-router.post("/", controller.postIndex);
+router.get("/", loggedOut, (req, res) => res.render("html", { view: "index" }));
 
 module.exports = router;

@@ -1,12 +1,17 @@
 const { Router } = require("express");
-const controller = require("../controllers/folders");
+const c = require("../controllers/folders");
+const { loggedIn } = require("../controllers/common");
+const { validateId } = require("../controllers/validations");
 const router = Router();
 
-router.get("/", controller.getRootFolder);
-router.get("/:id", controller.getFolder);
-router.patch("/:id", controller.patchFolder);
-router.delete("/:id", controller.deleteFolder);
-router.post("/:id/folder", controller.postFolder);
-router.post("/:id/file", controller.postFile);
+router.use("/", loggedIn);
+router.get("/", c.getRootFolder);
+
+router.use("/:id", validateId, c.hasAccess);
+router.get("/:id", c.getFolder);
+router.patch("/:id", c.patchFolder);
+router.delete("/:id", c.deleteFolder);
+router.post("/:id/folder", c.postFolder);
+router.post("/:id/file", c.postFile);
 
 module.exports = router;

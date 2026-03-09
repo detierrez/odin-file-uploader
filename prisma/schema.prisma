@@ -14,12 +14,13 @@ datasource db {
 }
 
 model User {
-  id           Int    @id @default(autoincrement())
-  username     String @unique
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
   password     String
-  rootFolderId Int
-  rootFolder   Folder @relation(fields: [rootFolderId], references: [id])
-  // files    File[]
+  folders      Folder[]
+  files        File[]
+  rootFolder   Folder?  @relation("Root", fields: [rootFolderId], references: [id])
+  rootFolderId Int?     @unique
 }
 
 model Folder {
@@ -29,7 +30,9 @@ model Folder {
   parentFolder   Folder?  @relation("Subfolder", fields: [parentFolderId], references: [id])
   subFolders     Folder[] @relation("Subfolder")
   files          File[]
-  users          User[]
+  ownerId        Int
+  owner          User     @relation(fields: [ownerId], references: [id])
+  rootForUser    User?    @relation("Root")
 }
 
 model File {
@@ -40,6 +43,8 @@ model File {
   path       String
   size       Int
   uploadedAt DateTime @default(now())
+  ownerId    Int
+  owner      User     @relation(fields: [ownerId], references: [id])
 }
 
 model Session {
